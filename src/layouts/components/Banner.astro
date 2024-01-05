@@ -7,9 +7,9 @@ export interface Props {
 const { title, text } = Astro.props;
 ---
 
-<section class="container mt-16">
+<section class="container my-16">
   <div class="o-region__inner">
-    <h1 class="h1">{title}</h1>
-    <p>{text}</p>
+    <h1 class="h1 page-heading">{title}</h1>
+    <p class="text-lg">{text}</p>
   </div>
 </section>
