@@ -1,0 +1,15 @@
+---
+export interface Props {
+  title: string;
+  text: string;
+}
+
+const { title, text } = Astro.props;
+---
+
+<section class="container mt-16">
+  <div class="o-region__inner">
+    <h1 class="h1">{title}</h1>
+    <p>{text}</p>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+import type { BlogPost } from "@lib/utils/contentful/contentful";
+import { getFormattedDate } from '@lib/utils/dates/dates';
+import { BiCalendarEdit } from "react-icons/bi/index.js";
+import Share from "./Share.astro";
+
+export interface Props {
+  blogPost: BlogPost;
+};
+
+const {
+  blogPost: {
+    blogSlug,
+    blogTitle,
+    publishDate,
+    blogShortDescription,
+    blogContent,
+  }
+} = Astro.props;
+
+---
+
+<section class="section">
+  <div class="container">
+    <article class="row justify-center">
+      <div class="md:col-10 text-center">
+        <h1 class="h2">{blogTitle}</h1>
+        <ul class="mt-4 flex flex-wrap items-center justify-center text-text">
+          <li class="mx-3">
+            <div
+              class="flex items-center hover:text-primary font-medium"
+            >
+              <span>Matthew Claffey</span>
+            </div>
+          </li>
+          <li class="mx-3 flex items-center flex-wrap font-medium">
+            <BiCalendarEdit className="mr-1 h-5 w-5 text-gray-600" />
+            <time datetime={publishDate}>{getFormattedDate(publishDate)}</time>
+          </li>
+        </ul>
+      </div>
+
+      <div class="md:col-10">
+        <div class="content mb-16 text-left">
+          <div set:html={blogContent} />
+        </div>
+        <div class="flex flex-wrap items-center justify-between">
+          <Share
+            className="social-share mb-4"
+            title={blogTitle}
+            description={blogShortDescription}
+            slug={`/blog/${blogSlug}`}
+          />
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

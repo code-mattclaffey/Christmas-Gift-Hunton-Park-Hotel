@@ -1,0 +1,41 @@
+---
+import { BiCalendarEdit } from "react-icons/bi/index.js";
+import type { BlogPost as BlogPostProps } from '@lib/utils/contentful/contentful';
+import { getFormattedDate } from "@lib/utils/dates/dates";
+
+export interface Props {
+  posts: BlogPostProps[];
+}
+
+const { posts } = Astro.props;
+---
+
+<section class="container mb-16">
+  <div class={`row gy-5 gx-4 ${posts.length === 1 ? "justify-center" : ""} `}>
+    {posts.map((post, i) => (
+      <div class={i === 0 ? "col-12" : "col-12 sm:col-6"}>
+        <ul class="mt-6 mb-4 flex flex-wrap items-center text-text">
+        <li class="mr-5">
+          <div
+            class="flex items-center hover:text-primary font-medium"
+          >
+            <span>Matthew Claffey</span>
+          </div>
+        </li>
+        <li class="mr-5 flex items-center flex-wrap font-medium">
+          <BiCalendarEdit className="mr-1 h-5 w-5 text-gray-600" />
+          <time datetime={post.publishDate}>{getFormattedDate(post.publishDate)}</time>
+        </li>
+      </ul>
+      <h3 class="mb-4">
+        <a href={`/blog/${post.blogSlug}`} class="block hover:text-primary transition duration-300">
+          {post.blogTitle}
+        </a>
+      </h3>
+      <p class="text-text">
+        {post.blogShortDescription}
+      </p>
+    </div>
+    ))}
+  </div>
+</section>

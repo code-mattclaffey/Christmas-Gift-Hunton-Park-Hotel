@@ -1,0 +1,76 @@
+---
+
+// Astro Imports
+import Base from "@layouts/Base.astro";
+import Banner from "@layouts/components/Banner.astro";
+import BlogPost from "@layouts/components/BlogPost.astro";
+import BlogList from "@layouts/components/BlogListing.astro";
+
+// JS Imports
+import {
+  getAllContentfulPages,
+  getContentfulBlogPosts,
+  getContentfulPage,
+} from '../lib/utils/contentful/contentful';
+import * as componentMappings from '../lib/utils/contentful/mappings';
+
+type TMapper = { [key: string]: any };
+
+const componentMapper: TMapper = {
+  bannerComponent: Banner,
+  blogPost: BlogPost,
+  blogListing: BlogList,
+};
+
+export async function getStaticPaths() {
+  const pages = await getAllContentfulPages();
+
+  const paths = pages?.items.map((page: any) => ({
+    params: { slug: page.fields.pageSlug === '/' ? undefined : page.fields.pageSlug },
+  }));
+
+  console.log(paths);
+
+  return paths;
+}
+
+await getContentfulBlogPosts();
+
+const params = Astro.params;
+
+const pageData = await getContentfulPage(params.slug ?? '/');
+
+let components = {};
+
+const availableComponents = (pageData?.fields.components as Array<{}> ?? []).filter((component: any) => {
+  return (componentMappings as any)[component.sys.contentType.sys.id] !== undefined;
+});
+
+await Promise.all(
+  availableComponents.map((component: any) => {
+    return (componentMappings as any)[component.sys.contentType.sys.id](component);
+  }),
+).then((formattedData: any) => {
+  formattedData.forEach((dataItem: any) => {
+    // @ts-ignore
+    components[dataItem.id] = dataItem.props;
+  });
+});
+
+---
+
+
+<Base
+  title={pageData?.fields.pageTitle as string ?? 'Not found'}
+  meta_title={pageData?.fields.pageTitle as string ?? 'Not found'}
+  description={pageData?.fields.pageDescription as string ?? 'Unable to find page'}
+>
+  {Object.keys(components).map((component) => {
+    const Component = componentMapper[component];
+
+    if (!Component) return null;
+
+    // @ts-ignore
+    return <Component {...components[component]} />;
+  })}
+</Base>
