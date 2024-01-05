@@ -27,11 +27,11 @@ const { posts } = Astro.props;
           <time datetime={post.publishDate}>{getFormattedDate(post.publishDate)}</time>
         </li>
       </ul>
-      <h3 class="mb-4">
+      <h2 class="mb-4">
         <a href={`/blog/${post.blogSlug}`} class="block hover:text-primary transition duration-300">
           {post.blogTitle}
         </a>
-      </h3>
+      </h2>
       <p class="text-text">
         {post.blogShortDescription}
       </p>
